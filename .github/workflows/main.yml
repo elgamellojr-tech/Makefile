@@ -1,29 +1,12 @@
-name: Compilar dylib DOMIDIOS
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+ARCHS = arm64 arm64e
+TARGET = iphone:clang:latest:14.0
+INSTALL_TARGET_PROCESSES = WhatsApp
 
-jobs:
-  build:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
+include $(THEOS)/makefiles/common.mk
 
-      - name: Instalar Theos
-        run: |
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
-          echo "THEOS=~/theos" >> $GITHUB_ENV
+TWEAK_NAME = DominioFlex
+DominioFlex_FILES = Tweak.x
+DominioFlex_CFLAGS = -fobjc-arc
+DominioFlex_FRAMEWORKS = UIKit Foundation
 
-      - name: Compilar dylib
-        run: |
-          export THEOS=~/theos
-          make package FINALPACKAGE=1
-
-      - name: Guardar dylib (Artifacts)
-        uses: actions/upload-artifact@v4
-        with:
-          name: DominioFlex-Dylib
-          path: .theos/obj/main/debug/*.dylib
+include $(THEOS_MAKE_PATH)/tweak.mk
