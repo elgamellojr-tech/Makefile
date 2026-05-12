@@ -1,5 +1,5 @@
 ARCHS = arm64 arm64e
-TARGET = iphone:clang:latest:14.0
+TARGET = iphone:clang:14.5:14.0
 INSTALL_TARGET_PROCESSES = WhatsApp
 
 include $(THEOS)/makefiles/common.mk
@@ -7,6 +7,6 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = DominioFlex
 DominioFlex_FILES = Tweak.x
 DominioFlex_CFLAGS = -fobjc-arc
-DominioFlex_FRAMEWORKS = UIKit Foundation
+DominioFlex_FRAMEWORKS = UIKit Foundation CoreGraphics
 
 include $(THEOS_MAKE_PATH)/tweak.mk
