@@ -3,30 +3,14 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Esto permite darle al botón "Play" para compilar manual
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: macos-latest
     steps:
       - name: Checkout del código
-        uses: actions/checkout@v3
-
-      - name: Instalar Theos
-        run: |
-         name: Compilar dylib DOMIDIOS
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch: # Esto permite darle al botón "Play" para compilar manual
-
-jobs:
-  build:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout del código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Instalar Theos
         run: |
@@ -39,17 +23,7 @@ jobs:
           make package FINALPACKAGE=1
 
       - name: Guardar dylib (Artifacts)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: DominioFlex-Dylib
-          path: .theos/obj/debug/*.dylib
-      - name: Compilar dylib
-        run: |
-          export THEOS=~/theos
-          make package FINALPACKAGE=1
-
-      - name: Guardar dylib (Artifacts)
-        uses: actions/upload-artifact@v3
-        with:
-          name: DominioFlex-Dylib
-          path: .theos/obj/debug/*.dylib
+          path: .theos/obj/main/debug/*.dylib
