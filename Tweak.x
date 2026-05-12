@@ -1,4 +1,22 @@
+#import <UIKit/UIKit.h>// PON ESTO AL PRINCIPIO DE TU TWEAK.X PARA QUE NO DE ERROR
 #import <UIKit/UIKit.h>
+
+@interface WAMessage : NSObject
+@property (nonatomic, assign) BOOL revoked;
+@end
+
+@interface WAChatSessionViewController : UIViewController
+- (void)sendReadReceipt;
+- (void)sendTypingStatus;
+@end
+
+@interface WAStatusMessageManager : NSObject
+- (void)sendReadReceiptForMessage:(id)arg1;
+@end
+
+@interface WAStaticConstants : NSObject
++ (double)maximumStatusVideoDuration;
+@end
 #import <objc/runtime.h>
 
 // --- FUNCIÓN PARA EL GHOST MODE Y ANTI-REVOKE (Sin necesidad de Headers) ---
