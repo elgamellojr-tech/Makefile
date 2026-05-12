@@ -1,6 +1,6 @@
-#import <UIKit/UIKit.h>// PON ESTO AL PRINCIPIO DE TU TWEAK.X PARA QUE NO DE ERROR
 #import <UIKit/UIKit.h>
 
+// --- DECLARACIONES PARA EVITAR EL ERROR 2 ---
 @interface WAMessage : NSObject
 @property (nonatomic, assign) BOOL revoked;
 @end
@@ -17,17 +17,8 @@
 @interface WAStaticConstants : NSObject
 + (double)maximumStatusVideoDuration;
 @end
-#import <objc/runtime.h>
 
-// --- FUNCIÓN PARA EL GHOST MODE Y ANTI-REVOKE (Sin necesidad de Headers) ---
-// Usamos "MSHookMessageEx" o hooks dinámicos para mayor compatibilidad
-
-static void aplicarParchesFlex() {
-    // Aquí puedes añadir logs para saber que se activó
-    NSLog(@"[DOMIDIOS] Aplicando parches VIP...");
-
-    // Nota: Si usas Theos en GitHub, asegúrate de que el archivo sea Tweak.x
-}
+// --- INICIO DEL TWEAK ---
 
 %group ParchesVIP
     %hook WAMessage
@@ -50,8 +41,8 @@ static void aplicarParchesFlex() {
 
 __attribute__((visibility("default")))
 __attribute__((constructor))
-static void domidios_fix_init() {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+static void domidios_init() {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         UIWindow *window = [UIApplication sharedApplication].keyWindow;
@@ -70,42 +61,36 @@ static void domidios_fix_init() {
 
         if (rootVC) {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"🛡️ iOS DOMIDIOS"
-                                        message:@"Introduce tu llave para activar parches VIP.\n(Requerido cada inicio)"
+                                        message:@"Introduce tu llave:\nWTDFGTHGUER"
                                         preferredStyle:UIAlertControllerStyleAlert];
 
             [alert addTextFieldWithConfigurationHandler:^(UITextField *tf) {
-                tf.placeholder = @"Key: WTDFGTHGUER";
+                tf.placeholder = @"Key";
                 tf.secureTextEntry = YES;
                 tf.keyboardAppearance = UIKeyboardAppearanceDark;
-                tf.textAlignment = NSTextAlignmentCenter;
             }];
 
             [alert addAction:[UIAlertAction actionWithTitle:@"VERIFICAR" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                NSString *inputKey = alert.textFields.firstObject.text;
+                NSString *key = alert.textFields.firstObject.text;
                 
-                if ([inputKey isEqualToString:@"WTDFGTHGUER"]) {
-                    NSDate *firstActivation = [prefs objectForKey:@"fecha_registro_domidios"];
-                    
-                    if (!firstActivation) {
-                        firstActivation = [NSDate date];
-                        [prefs setObject:firstActivation forKey:@"fecha_registro_domidios"];
+                if ([key isEqualToString:@"WTDFGTHGUER"]) {
+                    NSDate *first = [prefs objectForKey:@"fecha_registro_domidios"];
+                    if (!first) {
+                        first = [NSDate date];
+                        [prefs setObject:first forKey:@"fecha_registro_domidios"];
                         [prefs synchronize];
                     }
 
-                    NSTimeInterval elapsed = [[NSDate date] timeIntervalSinceDate:firstActivation];
-                    if (elapsed > 2592000) { 
-                        UIAlertController *expired = [UIAlertController alertControllerWithTitle:@"❌ EXPIRADO" message:@"Licencia vencida." preferredStyle:UIAlertControllerStyleAlert];
-                        [rootVC presentViewController:expired animated:YES completion:nil];
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ exit(0); });
+                    NSTimeInterval elapsed = [[NSDate date] timeIntervalSinceDate:first];
+                    if (elapsed > 2592000) {
+                        exit(0);
                     } else {
-                        // AQUÍ SE ACTIVAN LOS HOOKS
                         %init(ParchesVIP);
                     }
                 } else {
                     exit(0);
                 }
             }]];
-
             [rootVC presentViewController:alert animated:YES completion:nil];
         }
     });
